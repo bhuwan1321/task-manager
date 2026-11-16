@@ -1,155 +1,91 @@
-# 📝 Task Manager
+<h1 align="center">Task Manager</h1>
 
-A full-stack task management web application built with **React, Node.js, Express, and PostgreSQL**.
+<p align="center"><b>A full-stack task manager with due dates, overdue detection and a statistics dashboard.</b><br>
+React front end, Express REST API and PostgreSQL storage.<br>
+Runs locally. No accounts or cloud services required.</p>
 
-Create, edit, complete, filter, and delete tasks while keeping everything persisted in a real PostgreSQL database. The app also includes due dates, overdue detection, and a statistics dashboard with completion charts.
+<p align="center">
+  <a href="#quick-start"><b>Quick start</b></a> ·
+  <a href="#what-you-can-do"><b>What you can do</b></a> ·
+  <a href="#rest-api"><b>REST API</b></a> ·
+  <a href="#development"><b>Development</b></a>
+</p>
 
----
+Task Manager pairs a **React and Vite** front end with a small **Express** API. Tasks live in a real
+**PostgreSQL** database, so they persist across restarts and browsers. The backend creates its own table on first
+start, so there is no manual schema step.
 
-## ✨ Features
+## What you can do
 
-* ✅ Create, edit, and delete tasks
-* 📝 Add task titles and descriptions
-* 📅 Set optional due dates and times
-* 🔄 Toggle tasks between pending and completed
-* 🔍 Filter tasks by **All / Pending / Completed**
-* 🚨 Automatically detect overdue tasks
-* 📊 View task completion statistics
-* 📈 Completion donut chart
-* 📅 7-day completed-task activity chart
-* 🗄️ PostgreSQL database persistence
-* 🔐 Server-side and client-side input validation
-* ⚠️ User-friendly error handling
-* 🌐 RESTful API architecture
+| Use it for | What you get |
+|---|---|
+| **Managing tasks** | Create, edit, complete, toggle and delete tasks with a title and optional description |
+| **Deadlines** | Optional due date and time; pending tasks past their deadline are marked overdue |
+| **Filtering** | View All, Pending or Completed tasks |
+| **Statistics** | Total, completed, pending and overdue counts, a completion donut chart and a 7-day completed-task chart |
+| **Safe input** | Validation on both the form and the server, with errors shown in a dismissible banner |
 
----
+## Quick start
 
-## 🛠️ Tech Stack
+You need **Node.js 18+**, **npm** and **PostgreSQL**. Docker is the quickest way to get a database.
 
-### Frontend
+### 1. Start PostgreSQL
 
-* **React 19** — UI development
-* **Vite** — development server and build tool
-* **Recharts** — completion and activity charts
-* **Fetch API** — backend communication
-* **CSS** — custom application styling
+With Docker:
 
-### Backend
-
-* **Node.js** — JavaScript runtime
-* **Express.js** — REST API server
-* **PostgreSQL** — relational database
-* **pg (node-postgres)** — PostgreSQL connection pooling and queries
-* **cors** — cross-origin request handling
-* **dotenv** — environment configuration
-
----
-
-## 📁 Project Structure
-
-```text
-task-manager/
-│
-├── 📂 backend/
-│   ├── 📄 db.js
-│   │   └── PostgreSQL connection pool & database schema initialization
-│   │
-│   ├── 📄 server.js
-│   │   └── Express application entry point
-│   │
-│   ├── 📂 routes/
-│   │   └── 📄 tasks.js
-│   │       └── Task REST API routes, CRUD operations & validation
-│   │
-│   └── 📄 package.json
-│       └── Backend dependencies & scripts
-│
-├── 📂 frontend/
-│   ├── 📂 src/
-│   │   ├── 📄 api.js
-│   │   │   └── Fetch wrapper for backend API requests
-│   │   │
-│   │   ├── 📄 App.jsx
-│   │   │   └── Main application state & layout
-│   │   │
-│   │   ├── 📂 components/
-│   │   │   ├── 📄 TaskForm.jsx
-│   │   │   │   └── Add/edit task form
-│   │   │   │
-│   │   │   ├── 📄 TaskList.jsx
-│   │   │   │   └── Task list, loading & empty states
-│   │   │   │
-│   │   │   ├── 📄 TaskItem.jsx
-│   │   │   │   └── Individual task & overdue status
-│   │   │   │
-│   │   │   └── 📄 TaskStats.jsx
-│   │   │       └── Statistics cards & completion charts
-│   │   │
-│   │   └── 📄 index.css
-│   │       └── Application styling
-│   │
-│   ├── 📄 index.html
-│   │   └── Frontend HTML entry point
-│   │
-│   └── 📄 package.json
-│       └── Frontend dependencies & scripts
-│
-└── 📄 README.md
-    └── Project documentation
+```bash
+docker run -d --name taskmanager-db -e POSTGRES_PASSWORD=postgres -e POSTGRES_DB=taskmanager -p 5432:5432 postgres:16-alpine
 ```
 
-### 🏗️ Application Architecture
+Or install PostgreSQL yourself and create the database:
 
-```text
-┌──────────────────────────┐
-│        React UI          │
-│      React + Vite        │
-└────────────┬─────────────┘
-             │
-             │ REST API
-             ▼
-┌──────────────────────────┐
-│       Express API        │
-│    Node.js + Express     │
-└────────────┬─────────────┘
-             │
-             │ SQL / pg
-             ▼
-┌──────────────────────────┐
-│       PostgreSQL         │
-│       Task Database      │
-└──────────────────────────┘
+```bash
+createdb taskmanager
 ```
 
----
+### 2. Start the API
 
-## 🌐 REST API
-
-**Base URL**
-
-```text
-http://localhost:5000/api
+```bash
+git clone https://github.com/bhuwan1321/task-manager.git
+cd task-manager/backend
+cp .env.example .env
+npm install
+npm start
 ```
 
-| Method   | Endpoint            | Description              |
-| -------- | ------------------- | ------------------------ |
-| `GET`    | `/tasks`            | Get all tasks            |
-| `GET`    | `/tasks/:id`        | Get a single task        |
-| `POST`   | `/tasks`            | Create a new task        |
-| `PUT`    | `/tasks/:id`        | Update an existing task  |
-| `PATCH`  | `/tasks/:id/toggle` | Toggle completed/pending |
-| `DELETE` | `/tasks/:id`        | Delete a task            |
+The default `.env.example` matches the Docker command above. If you use your own PostgreSQL, edit `.env`.
+`DATABASE_URL` takes priority; otherwise the individual `PGHOST`, `PGPORT`, `PGUSER`, `PGPASSWORD` and
+`PGDATABASE` values are used. The API listens on <http://localhost:5000>.
 
-### Filtering
+### 3. Start the front end
 
-Tasks can be filtered using the `status` query parameter:
+In a second terminal:
 
-```text
-GET /tasks?status=completed
-GET /tasks?status=pending
+```bash
+cd task-manager/frontend
+cp .env.example .env
+npm install
+npm run dev
 ```
 
-### Create a Task
+Open <http://localhost:5173>. The front end reads the API address from `VITE_API_URL`, which defaults to
+`http://localhost:5000/api`.
+
+## REST API
+
+Base URL: `http://localhost:5000/api`
+
+| Method | Endpoint | Description |
+|---|---|---|
+| `GET` | `/health` | Liveness check |
+| `GET` | `/tasks` | List tasks; filter with `?status=completed` or `?status=pending` |
+| `GET` | `/tasks/:id` | Get one task |
+| `POST` | `/tasks` | Create a task |
+| `PUT` | `/tasks/:id` | Update a task |
+| `PATCH` | `/tasks/:id/toggle` | Toggle completed and pending |
+| `DELETE` | `/tasks/:id` | Delete a task |
+
+Create a task:
 
 ```json
 {
@@ -159,300 +95,36 @@ GET /tasks?status=pending
 }
 ```
 
-The `title` field is required.
+Only `title` is required. Invalid requests return `400` with an `errors` array. A task that does not exist returns `404`.
 
-`description` and `due_date` are optional.
+## Security and privacy
 
-### Validation
+- Every query is parameterized, so user input is never concatenated into SQL.
+- The server validates required fields, empty titles, input types, length limits, due-date format and task IDs.
+- Tasks are stored only in your own PostgreSQL database. The app has no accounts, analytics or external calls.
+- CORS is open so the front end can reach the API during local development. Restrict it before any public deployment.
+- There is no authentication yet, so do not expose the API to the internet as it is.
 
-All write endpoints validate incoming data.
+## Project layout
 
-Invalid requests return:
-
-```text
-400 Bad Request
+```
+backend/
+  server.js            Express entry point and error handling
+  db.js                PostgreSQL pool and automatic schema setup
+  routes/tasks.js      REST routes and validation
+frontend/
+  src/App.jsx          State and layout
+  src/api.js           Fetch wrapper for the API
+  src/components/      TaskForm, TaskList, TaskItem, TaskStats
 ```
 
-with an `errors` array.
-
-Requests for a task that does not exist return:
-
-```text
-404 Not Found
-```
-
----
-
-## 🚀 Running Locally
-
-### Prerequisites
-
-Make sure you have:
-
-* **Node.js 18+**
-* **npm**
-* **PostgreSQL**
-* **Git**
-
----
-
-### 1. Clone the Repository
+## Development
 
 ```bash
-git clone https://github.com/bhuwan1321/task-manager.git
-cd task-manager
+cd backend && npm run dev      # API with automatic restart (nodemon)
+cd frontend && npm run lint    # oxlint
+cd frontend && npm run build   # production build
 ```
 
----
-
-### 2. Install PostgreSQL
-
-#### macOS — Homebrew
-
-```bash
-brew install postgresql@16
-brew services start postgresql@16
-```
-
-Homebrew typically creates a PostgreSQL role matching your macOS username, allowing local connections without a password.
-
-#### Linux / Other Platforms
-
-Install PostgreSQL using your operating system's package manager and make sure the PostgreSQL service is running.
-
----
-
-### 3. Create the Database
-
-```bash
-createdb taskmanager
-```
-
-Or using `psql`:
-
-```sql
-CREATE DATABASE taskmanager;
-```
-
----
-
-### 4. Configure the Backend
-
-Navigate to the backend:
-
-```bash
-cd backend
-```
-
-Create your environment file:
-
-```bash
-cp .env.example .env
-```
-
-Update `.env` according to your PostgreSQL configuration.
-
-For a typical local setup:
-
-```env
-PGUSER=your_username
-PGHOST=localhost
-PGPORT=5432
-PGDATABASE=taskmanager
-PGPASSWORD=
-PORT=5000
-```
-
-> **Note:** If `DATABASE_URL` is present, it takes priority over the individual PostgreSQL configuration fields.
-
----
-
-### 5. Install Backend Dependencies
-
-```bash
-npm install
-```
-
-Start the backend:
-
-```bash
-npm start
-```
-
-The API will run at:
-
-```text
-http://localhost:5000
-```
-
-The `tasks` table is created automatically when the server starts if it doesn't already exist.
-
-No manual table creation is required.
-
----
-
-### 6. Start the Frontend
-
-Open another terminal:
-
-```bash
-cd frontend
-```
-
-Install dependencies:
-
-```bash
-npm install
-```
-
-Start the development server:
-
-```bash
-npm run dev
-```
-
-Vite will normally start the application at:
-
-```text
-http://localhost:5173
-```
-
----
-
-### 7. Open the Application
-
-Open your browser and visit:
-
-```text
-http://localhost:5173
-```
-
-You can now:
-
-* Create tasks
-* Add descriptions
-* Set due dates
-* Edit tasks
-* Mark tasks as completed
-* Filter tasks
-* Delete tasks
-* View completion statistics
-* Track overdue tasks
-
-All changes are persisted through the REST API and PostgreSQL database.
-
----
-
-## 📊 Dashboard
-
-The statistics dashboard provides an overview of your tasks, including:
-
-| Statistic   | Description                       |
-| ----------- | --------------------------------- |
-| 📋 Total    | Total number of tasks             |
-| ✅ Completed | Number of completed tasks         |
-| ⏳ Pending   | Number of pending tasks           |
-| 🚨 Overdue  | Pending tasks past their due date |
-
-The dashboard also includes:
-
-* **Completion donut chart** — completed vs pending tasks
-* **7-day activity chart** — tasks completed during the last seven days
-
-Charts are powered by **Recharts**.
-
----
-
-## 🔒 Validation & Error Handling
-
-The application validates user input on both the frontend and backend.
-
-### Client-side
-
-The task form prevents invalid submissions such as an empty title.
-
-### Server-side
-
-The REST API validates:
-
-* Required fields
-* Empty titles
-* Input types
-* Field length limits
-* Due-date formatting
-* Task IDs
-* Task existence
-
-API errors are returned with appropriate HTTP status codes and displayed in the frontend through a dismissible error banner.
-
----
-
-## 🧩 Design Principles
-
-The project follows a simple separation-of-concerns architecture:
-
-```text
-Frontend
-   │
-   ├── UI Components
-   ├── Application State
-   └── API Communication
-          │
-          ▼
-Backend
-   │
-   ├── Express Server
-   ├── REST Routes
-   └── Database Layer
-          │
-          ▼
-PostgreSQL
-```
-
-Each part has a focused responsibility:
-
-* `routes/tasks.js` → API endpoints and request validation
-* `db.js` → PostgreSQL connection and database operations
-* `App.jsx` → application state and layout
-* `components/` → reusable UI components
-* `api.js` → frontend/backend communication
-
----
-
-## 📝 Notes
-
-* Tasks are persisted in PostgreSQL rather than browser storage.
-* Due dates are stored as ISO 8601 datetime values.
-* Pending tasks past their due date are automatically marked as overdue.
-* The database schema is initialized automatically by the backend.
-* The frontend communicates with the backend exclusively through REST API endpoints.
-* Environment variables are used for local configuration.
-* `.env` files should not be committed to the repository.
-
----
-
-## 👨‍💻 Author
-
-**Bhuwan Rasala**
-
-GitHub: [@bhuwan1321](https://github.com/bhuwan1321)
-
----
-
-## ⭐ Future Improvements
-
-Potential additions for future versions:
-
-* 🔐 User authentication
-* 👥 Multiple user accounts
-* 🏷️ Task categories and tags
-* 🔎 Search functionality
-* 🔔 Due-date reminders
-* 📱 Improved mobile experience
-* 🌙 Dark mode
-* ☁️ Cloud deployment
-* 📊 More advanced analytics
-
----
-
-⭐ If you find this project useful, consider giving it a star!
+Pending tasks past their due date are shown as overdue, and due dates are stored as ISO 8601 timestamps.
+Do not commit `.env` files.

@@ -11,6 +11,9 @@ Runs locally. No accounts or cloud services required.</p>
   <a href="#development"><b>Development</b></a>
 </p>
 
+<p align="center"><sub>Built with</sub><br>
+<img src="https://skillicons.dev/icons?i=react,vite,nodejs,express,postgres,js,css" alt="React, Vite, Node.js, Express, PostgreSQL, JavaScript, CSS" height="40"></p>
+
 Task Manager pairs a **React and Vite** front end with a small **Express** API. Tasks live in a real
 **PostgreSQL** database, so they persist across restarts and browsers. The backend creates its own table on first
 start, so there is no manual schema step.
